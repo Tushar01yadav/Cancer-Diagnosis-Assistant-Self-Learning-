@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from time import time
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -84,7 +85,6 @@ if st.session_state.page == "home":
     with col2:
         Another = st.number_input("Weight ", min_value=0, max_value=100)
         st.write("")
-
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         Password: str | None = st.text_input("Create Your Password  ", type="password")
@@ -118,6 +118,7 @@ if st.session_state.page == "home":
     if submit:
      if not (name.strip() and City.strip() and Password.strip() and Checked_Password.strip()) or age == 0 or Another == 0:  # check if empty or just spaces
          st.warning(" Fields cannot be empty! Please enter a value.")
+
      else :
          if Password == Checked_Password :
 
@@ -129,6 +130,9 @@ if st.session_state.page == "home":
            user_id = c.lastrowid
            conn.close()
            st.success(f"Hello {name}, You are now Registered, Your Registration id is : {user_id}")
+           time.sleep(1.5) 
+           st.session_state.page = "Check"
+           st.rerun()
          elif Password != Checked_Password :
               st.warning("Password Incorrect")
     login = st.button("Already have a Registered ID?",on_click=go_login)
@@ -181,6 +185,7 @@ elif st.session_state.page == "login":
          st.warning("user not found")
 
         elif result == (password,):
+            time.sleep(1.5) 
             st.success(f"welcome Back ")
             st.session_state.page = "Check"
             st.rerun()
