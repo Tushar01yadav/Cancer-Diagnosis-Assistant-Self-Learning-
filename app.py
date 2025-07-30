@@ -131,8 +131,7 @@ if st.session_state.page == "home":
            conn.close()
            st.success(f"Hello {name}, You are now Registered, Your Registration id is : {user_id}")
            
-           st.session_state.page = "Check"
-           st.rerun()
+          
          elif Password != Checked_Password :
               st.warning("Password Incorrect")
     login = st.button("Already have a Registered ID?",on_click=go_login)
