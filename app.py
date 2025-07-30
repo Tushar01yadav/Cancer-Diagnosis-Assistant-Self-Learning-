@@ -305,40 +305,78 @@ elif st.session_state.page == "Check":
     z.execute("SELECT Worst_Area, Worst_Concave_Points, Mean_Concave_Points, Worst_Radius, Worst_Perimeter, Mean_Perimeter FROM cancer")
     rows = z.fetchall()
     z.execute("SELECT label FROM cancer")
-    y = z.fetchall()
+    y_rows = z.fetchall()
 
 
-    if len(rows) >= 10:
-        st.info("📊 10 new inputs collected. Appending to training dataset...")
+
+
+
+
+    if len(rows) >= 5:
+        st.info("📊 5 new inputs collected. Appending to training dataset...")
+        ##add from here
+        new_columns = ['Worst_Area', 'Worst_Concave_Points', 'Mean_Concave_Points',
+                       'Worst_Radius', 'Worst_Perimeter', 'Mean_Perimeter']
+        cancer_model.X_selected.columns = new_columns
+
+        columns = ['Worst_Area', 'Worst_Concave_Points', 'Mean_Concave_Points',
+                   'Worst_Radius', 'Worst_Perimeter', 'Mean_Perimeter']
+
+        df_new = pd.DataFrame(rows, columns=columns)
+
+        df_new_y = pd.DataFrame(y_rows, columns=['target'])
+
+        combined_df_y = pd.concat([cancer_model.y, df_new_y], ignore_index=True)
+        combined_df_y = combined_df_y.drop(columns='target')
+        combined_df_y = combined_df_y.rename(columns={0: 'target'})
+        combined_df = pd.concat([cancer_model.X_selected, df_new], ignore_index=True)
+        combined_df_y = combined_df_y.fillna(0)
+        st.write("New Data points appended to dataset✅")
+        st.write("Retraining Training the  Model.....")
+        X_train, X_test, y_train, y_test = train_test_split(combined_df, combined_df_y, test_size=0.2, random_state=42)
+
+        # Train RandomForestClassifier on selected features
+        clf = RandomForestClassifier(random_state=42)
+        clf.fit(X_train, y_train)
+        # Evaluate
+        y_pred = clf.predict(X_test)
+        st.write("Model has retrained✅ ")
+        st.write("Accuracy of model after retraining :")
+        st.write(accuracy_score(y_test, y_pred))
+        with open('rfe_model.pkl', 'wb') as f:
+            pickle.dump(clf, f)
+        # Delete DB data to avoid duplication on next run
+        z.execute("DELETE FROM cancer")
+        conn.commit()
+
+
 
         # Create DataFrame from DB rows
-        df_new = pd.DataFrame(rows, columns=[
-            'Radius_Mean', 'Concavity_Mean', 'Concavity_Worst', 'Radius_se',
-            'Compactness_Worst', 'Compactness_Mean'
-        ])
-
-        y_df = pd.DataFrame(y, columns=['label'])
-
-
-        # Add predicted labels to DataFrame
-        df_new['label'] = output[0]
-
-        # Append to dataset.csv (create if it doesn't exist)
-        X_combined = pd.concat([cancer_model.X_selected , df_new], ignore_index=True)
-        Y_combined = pd.concat([cancer_model.y, y_df], ignore_index=True)
-        # Combine features and labels into one DataFrame
-        df_combined = pd.concat([X_combined, Y_combined], axis=1)
-
-        # Drop rows where either X or Y has NaN
-        df_combined = df_combined.dropna()
-
-        # Separate back into X and Y
-        X_clean = df_combined.iloc[:, :-1]  # all columns except last one
-        y_clean = df_combined.iloc[:, -1]  # last column (label)
-
+        # df_new = pd.DataFrame(rows, columns=[
+        #     'Radius_Mean', 'Concavity_Mean', 'Concavity_Worst', 'Radius_se',
+        #     'Compactness_Worst', 'Compactness_Mean'
+        # ])
+        #
+        # y_df = pd.DataFrame(y, columns=['label'])
+        #
+        #
+        # # Add predicted labels to DataFrame
+        # df_new['label'] = output[0]
+        #
+        # # Append to dataset.csv (create if it doesn't exist)
+        # X_combined = pd.concat([cancer_model.X_selected , df_new], ignore_index=True)
+        # Y_combined = pd.concat([cancer_model.y, y_df], ignore_index=True)
+        # # Combine features and labels into one DataFrame
+        # df_combined = pd.concat([X_combined, Y_combined], axis=1)
+        #
+        # # Drop rows where either X or Y has NaN
+        # df_combined = df_combined.dropna()
+        #
+        # # Separate back into X and Y
+        # X_clean = df_combined.iloc[:, :-1]  # all columns except last one
+        # y_clean = df_combined.iloc[:, -1]  # last column (label)
+        # st.write(X_clean)
+        # st.write(y_clean)
         # Clean DB after appending (optional but avoids duplication)
         z.execute("DELETE FROM cancer")
         conn.commit()
-        st.success("✅ New data appended to dataset.csv for training.")
-        st.success("✅ Model Training has done")
-  
