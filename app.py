@@ -82,7 +82,7 @@ if st.session_state.page == "home":
         City = st.text_input("Enter your City")
         st.write("")
     with col2:
-        Another = st.number_input("Another field ", min_value=0, max_value=100)
+        Another = st.number_input("Weight ", min_value=0, max_value=100)
         st.write("")
 
     col1, col2, col3 = st.columns([1, 2, 1])
