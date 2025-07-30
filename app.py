@@ -130,7 +130,7 @@ if st.session_state.page == "home":
            user_id = c.lastrowid
            conn.close()
            st.success(f"Hello {name}, You are now Registered, Your Registration id is : {user_id}")
-           time.sleep(1.5) 
+           
            st.session_state.page = "Check"
            st.rerun()
          elif Password != Checked_Password :
@@ -185,7 +185,7 @@ elif st.session_state.page == "login":
          st.warning("user not found")
 
         elif result == (password,):
-            time.sleep(1.5) 
+        
             st.success(f"welcome Back ")
             st.session_state.page = "Check"
             st.rerun()
