@@ -46,3 +46,10 @@ It allows users to sign up, input symptoms, and receive instant predictions usin
 ├── screenshots/ # Images used in README
 ├── requirements.txt # Python dependencies
 └── README.md
+
+
+👨‍💻 Author
+Tushar Yadav
+📍 Gurugram, Haryana, India
+🎓 Computer Science Graduate | AI/ML Enthusiast
+🔗 LinkedIn https://www.linkedin.com/in/tushar-yadav-5829bb353/
