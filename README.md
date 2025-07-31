@@ -7,7 +7,7 @@ It allows users to sign up, input symptoms, and receive instant predictions usin
 
 ## 🚀 Live Demo
 ⚠️ **Note:** This app is deployed on Streamlit’s free tier and may go to sleep due to inactivity.  
-If the app seems unresponsive, please **click “Backup this app”** or refresh the page to get it started again.  
+If the app seems unresponsive, please **click “Backup this app”** to get it started again.  
 Thank you for your patience! 🚀
 
 👉 [Launch the App](https://bagzcsdnqspp55gzwymerr.streamlit.app/)  
